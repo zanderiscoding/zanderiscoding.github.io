@@ -422,7 +422,8 @@
             try {
                 const response = await fetch(`https://api.github.com/repos/zanderiscoding/${repo}/readme`);
                 const data = await response.json();
-                const markdown = atob(data.content);
+                // Properly decode UTF-8 content including emojis
+                const markdown = decodeURIComponent(escape(atob(data.content)));
                 return marked.parse(markdown); // Parse markdown to HTML
             } catch (error) {
                 console.error('Error fetching README:', error);
