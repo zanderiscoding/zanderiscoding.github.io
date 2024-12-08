@@ -613,8 +613,7 @@
         // Initialize project cards
         document.querySelectorAll('.project').forEach(project => {
             const repoName = project.querySelector('h2').textContent;
-            let readmeContainer = createReadmeContainer();
-            let isClosing = false; // Add flag to track closing state
+            let isClosing = false;
             
             project.addEventListener('click', async (e) => {
                 // Remove hint immediately when clicked
@@ -634,32 +633,33 @@
                 }
 
                 // Check if this project's README is already open
-                const existingReadme = project.nextElementSibling;
-                if (existingReadme && existingReadme.classList.contains('readme-container')) {
-                    isClosing = true;
-                    existingReadme.classList.remove('active');
-                    setTimeout(() => {
-                        existingReadme.remove();
-                        isClosing = false;
-                    }, 300);
-                    return;
+                const existingReadme = document.querySelector('.readme-container');
+                if (existingReadme) {
+                    // If clicking the same project that's already open, close it
+                    if (existingReadme.dataset.project === repoName) {
+                        isClosing = true;
+                        existingReadme.classList.remove('active');
+                        setTimeout(() => {
+                            existingReadme.remove();
+                            isClosing = false;
+                        }, 300);
+                        return;
+                    }
+                    // If clicking a different project, remove the old readme immediately
+                    existingReadme.remove();
                 }
 
-                // Remove any other open README containers with animation
-                document.querySelectorAll('.readme-container').forEach(container => {
-                    container.classList.remove('active');
-                    setTimeout(() => {
-                        container.remove();
-                    }, 300);
-                });
+                // Create new readme container
+                const readmeContainer = createReadmeContainer();
+                readmeContainer.dataset.project = repoName; // Add project identifier
 
                 // Calculate position for readme container
                 const rect = project.getBoundingClientRect();
                 const projectsContainer = project.closest('.projects');
                 const containerRect = projectsContainer.getBoundingClientRect();
-                readmeContainer.style.top = `${rect.bottom - containerRect.top + 6}px`;
+                readmeContainer.style.top = `${rect.bottom - containerRect.top}px`;
 
-                // Insert readme into projects container instead of after project
+                // Insert readme into projects container
                 projectsContainer.appendChild(readmeContainer);
                 readmeContainer.offsetHeight;
                 readmeContainer.classList.add('active');
