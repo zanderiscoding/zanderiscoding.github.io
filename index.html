@@ -130,6 +130,7 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1.5rem;
+            position: relative;
         }
 
         .project {
@@ -240,7 +241,9 @@
 
         /* Update README display styles */
         .readme-container {
-            grid-column: 1 / -1;
+            position: absolute;
+            left: 0;
+            right: 0;
             background: var(--card-bg);
             padding: 0 1.5rem;
             border: 1px solid var(--border);
@@ -249,11 +252,12 @@
             overflow: hidden;
             opacity: 0;
             transition: all 0.3s ease-in-out;
+            z-index: 10;
         }
 
         .readme-container.active {
             padding: 1.5rem;
-            max-height: 2000px; /* Adjust this value based on your needs */
+            max-height: 5000px; /* Increased from 2000px to 5000px */
             opacity: 1;
         }
 
@@ -480,6 +484,15 @@
                 transform: translateY(0);
             }
         }
+
+        /* Add styles for the readme footer */
+        .readme-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
     </style>
 </head>
 <body>
@@ -590,6 +603,9 @@
                     <button class="close-readme">close</button>
                 </div>
                 <div class="readme-content"></div>
+                <div class="readme-footer">
+                    <button class="close-readme">close</button>
+                </div>
             `;
             return container;
         }
@@ -629,8 +645,14 @@
                     }, 300);
                 });
 
-                // Insert new readme container after the clicked project
-                project.insertAdjacentElement('afterend', readmeContainer);
+                // Calculate position for readme container
+                const rect = project.getBoundingClientRect();
+                const projectsContainer = project.closest('.projects');
+                const containerRect = projectsContainer.getBoundingClientRect();
+                readmeContainer.style.top = `${rect.bottom - containerRect.top + 6}px`;
+
+                // Insert readme into projects container instead of after project
+                projectsContainer.appendChild(readmeContainer);
                 readmeContainer.offsetHeight;
                 readmeContainer.classList.add('active');
 
