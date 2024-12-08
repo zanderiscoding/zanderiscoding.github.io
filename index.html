@@ -72,6 +72,7 @@
             align-items: center;
             gap: 0.5rem;
             font-size: 0.8rem;
+            transition: opacity 0.3s ease;
         }
 
         .theme-switch button {
@@ -714,6 +715,16 @@
             });
             event.stopPropagation(); // Prevent README from opening when clicking copy button
         }
+
+        // Add scroll handler for theme toggle visibility
+        window.addEventListener('scroll', () => {
+            const themeSwitch = document.querySelector('.theme-switch');
+            if (window.scrollY > 100) {
+                themeSwitch.style.opacity = '0';
+            } else {
+                themeSwitch.style.opacity = '1';
+            }
+        });
     </script>
 </body>
 </html>
