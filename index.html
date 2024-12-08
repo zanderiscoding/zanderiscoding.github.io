@@ -664,6 +664,16 @@
                 readmeContainer.offsetHeight;
                 readmeContainer.classList.add('active');
 
+                // Scroll README into view on mobile
+                if (window.innerWidth <= 600) {
+                    setTimeout(() => {
+                        readmeContainer.scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'nearest'
+                        });
+                    }, 100); // Small delay to ensure animation has started
+                }
+
                 // Show loading state
                 readmeContainer.querySelector('.readme-content').innerHTML = 'Loading...';
 
