@@ -138,6 +138,7 @@
             border: 1px solid var(--border);
             transition: all 0.2s ease;
             cursor: pointer;
+            position: relative;
         }
 
         .project:hover {
@@ -366,6 +367,119 @@
         .markdown-content table th {
             background: var(--bg);
         }
+
+        /* Update the install command styles to be more compact */
+        .install-command {
+            background: var(--bg);
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            margin: 0.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border);
+        }
+
+        .install-command code {
+            color: var(--subtle-text);
+        }
+
+        .copy-button {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--subtle-text);
+            padding: 0.2rem 0.4rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            font-family: var(--font-mono);
+            transition: all 0.2s ease;
+            margin-left: 0.5rem;
+        }
+
+        .copy-button:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Update the hint-peek styles */
+        .hint-peek {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent);
+            color: var(--bg);
+            padding: 0.4rem 0.8rem;
+            font-size: 0.7rem;
+            border-radius: 4px;
+            opacity: 0;
+            transform: translateY(0);
+            animation: peekBounce 10s ease-in-out;
+            animation-delay: 1s;
+            pointer-events: none;
+        }
+
+        @keyframes peekBounce {
+            0% {
+                opacity: 0;
+                transform: translateY(0);
+            }
+            5% {
+                opacity: 1;
+                transform: translateY(-5px);
+            }
+            10% {
+                transform: translateY(0);
+            }
+            15% {
+                transform: translateY(-5px);
+            }
+            20% {
+                transform: translateY(0);
+            }
+            25% {
+                transform: translateY(-5px);
+            }
+            30% {
+                transform: translateY(0);
+            }
+            35% {
+                transform: translateY(-5px);
+            }
+            40% {
+                transform: translateY(0);
+            }
+            45% {
+                transform: translateY(-5px);
+            }
+            50% {
+                transform: translateY(0);
+            }
+            55% {
+                transform: translateY(-5px);
+            }
+            60% {
+                transform: translateY(0);
+            }
+            65% {
+                transform: translateY(-5px);
+            }
+            70% {
+                transform: translateY(0);
+            }
+            75% {
+                transform: translateY(-5px);
+            }
+            80% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body>
@@ -393,7 +507,12 @@
         <main class="projects">
             <article class="project">
                 <h2>howcani</h2>
+                <div class="hint-peek">click to expand readme</div>
                 <p>AI-powered assistance for terminal commands. Making the command line more accessible and intuitive.</p>
+                <div class="install-command">
+                    <code>npm install -g howcani</code>
+                    <button class="copy-button" onclick="copyToClipboard('npm install -g howcani', event)">copy</button>
+                </div>
                 <div class="project-links">
                     <a href="https://github.com/zanderiscoding/howcani" target="_blank">
                         <i class="fab fa-github"></i>repo
@@ -407,6 +526,10 @@
             <article class="project">
                 <h2>commitit</h2>
                 <p>Professional commit message generation using AI. The business-appropriate version of git-snark.</p>
+                <div class="install-command">
+                    <code>npm install -g @zanderiscoding/commitit</code>
+                    <button class="copy-button" onclick="copyToClipboard('npm install -g @zanderiscoding/commitit', event)">copy</button>
+                </div>
                 <div class="project-links">
                     <a href="https://github.com/zanderiscoding/commitit" target="_blank">
                         <i class="fab fa-github"></i>repo
@@ -420,6 +543,10 @@
             <article class="project">
                 <h2>git-snark</h2>
                 <p>Generate witty and snarky commit messages using AI. Add personality to your git workflow.</p>
+                <div class="install-command">
+                    <code>npm install -g git-snark</code>
+                    <button class="copy-button" onclick="copyToClipboard('npm install -g git-snark', event)">copy</button>
+                </div>
                 <div class="project-links">
                     <a href="https://github.com/zanderiscoding/git-snark" target="_blank">
                         <i class="fab fa-github"></i>repo
@@ -473,6 +600,12 @@
             let readmeContainer = createReadmeContainer();
             
             project.addEventListener('click', async (e) => {
+                // Remove hint immediately when clicked
+                const hint = project.querySelector('.hint-peek');
+                if (hint) {
+                    hint.remove();
+                }
+
                 // Prevent clicking links inside the project card from triggering README
                 if (e.target.closest('.project-links')) {
                     return;
@@ -526,6 +659,21 @@
                 }, 300);
             }
         });
+
+        // Fix the copy function to properly handle the event
+        function copyToClipboard(text, event) {
+            navigator.clipboard.writeText(text).then(() => {
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = 'copied!';
+                button.style.color = 'var(--accent)';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.color = 'var(--subtle-text)';
+                }, 1000);
+            });
+            event.stopPropagation(); // Prevent README from opening when clicking copy button
+        }
     </script>
 </body>
 </html>
