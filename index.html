@@ -614,6 +614,7 @@
         document.querySelectorAll('.project').forEach(project => {
             const repoName = project.querySelector('h2').textContent;
             let readmeContainer = createReadmeContainer();
+            let isClosing = false; // Add flag to track closing state
             
             project.addEventListener('click', async (e) => {
                 // Remove hint immediately when clicked
@@ -627,12 +628,19 @@
                     return;
                 }
 
+                // Don't process clicks while closing animation is happening
+                if (isClosing) {
+                    return;
+                }
+
                 // Check if this project's README is already open
                 const existingReadme = project.nextElementSibling;
                 if (existingReadme && existingReadme.classList.contains('readme-container')) {
+                    isClosing = true;
                     existingReadme.classList.remove('active');
                     setTimeout(() => {
                         existingReadme.remove();
+                        isClosing = false;
                     }, 300);
                     return;
                 }
