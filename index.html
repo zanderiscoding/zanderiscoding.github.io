@@ -127,8 +127,9 @@
         }
 
         .projects {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
         }
 
         .project {
@@ -179,7 +180,7 @@
         }
 
         @media (max-width: 1024px) {
-            .project-row {
+            .projects {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
@@ -189,8 +190,26 @@
                 padding: 1rem;
             }
 
-            .project-row {
+            .projects {
                 grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .project-row {
+                display: none;
+            }
+
+            .readme-container {
+                margin-top: 0.5rem;
+            }
+
+            .readme-container.active {
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+
+            .project {
+                margin-bottom: 0;
             }
 
             .social-links {
@@ -202,6 +221,19 @@
             .theme-switch {
                 top: 1rem;
                 right: 1rem;
+            }
+
+            /* Adjust markdown content for mobile */
+            .markdown-content pre {
+                max-width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            }
+
+            .markdown-content table {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
             }
         }
 
@@ -334,14 +366,6 @@
         .markdown-content table th {
             background: var(--bg);
         }
-
-        /* Add this CSS for the row container */
-        .project-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
     </style>
 </head>
 <body>
@@ -367,46 +391,44 @@
         </header>
 
         <main class="projects">
-            <div class="project-row">
-                <article class="project">
-                    <h2>howcani</h2>
-                    <p>AI-powered assistance for terminal commands. Making the command line more accessible and intuitive.</p>
-                    <div class="project-links">
-                        <a href="https://github.com/zanderiscoding/howcani" target="_blank">
-                            <i class="fab fa-github"></i>repo
-                        </a>
-                        <a href="https://www.npmjs.com/packages/howcani" target="_blank">
-                            <i class="fab fa-npm"></i>package
-                        </a>
-                    </div>
-                </article>
-                
-                <article class="project">
-                    <h2>commitit</h2>
-                    <p>Professional commit message generation using AI. The business-appropriate version of git-snark.</p>
-                    <div class="project-links">
-                        <a href="https://github.com/zanderiscoding/commitit" target="_blank">
-                            <i class="fab fa-github"></i>repo
-                        </a>
-                        <a href="https://www.npmjs.com/packages/@zanderiscoding/commitit" target="_blank">
-                            <i class="fab fa-npm"></i>package
-                        </a>
-                    </div>
-                </article>
+            <article class="project">
+                <h2>howcani</h2>
+                <p>AI-powered assistance for terminal commands. Making the command line more accessible and intuitive.</p>
+                <div class="project-links">
+                    <a href="https://github.com/zanderiscoding/howcani" target="_blank">
+                        <i class="fab fa-github"></i>repo
+                    </a>
+                    <a href="https://www.npmjs.com/packages/howcani" target="_blank">
+                        <i class="fab fa-npm"></i>package
+                    </a>
+                </div>
+            </article>
+            
+            <article class="project">
+                <h2>commitit</h2>
+                <p>Professional commit message generation using AI. The business-appropriate version of git-snark.</p>
+                <div class="project-links">
+                    <a href="https://github.com/zanderiscoding/commitit" target="_blank">
+                        <i class="fab fa-github"></i>repo
+                    </a>
+                    <a href="https://www.npmjs.com/packages/@zanderiscoding/commitit" target="_blank">
+                        <i class="fab fa-npm"></i>package
+                    </a>
+                </div>
+            </article>
 
-                <article class="project">
-                    <h2>git-snark</h2>
-                    <p>Generate witty and snarky commit messages using AI. Add personality to your git workflow.</p>
-                    <div class="project-links">
-                        <a href="https://github.com/zanderiscoding/git-snark" target="_blank">
-                            <i class="fab fa-github"></i>repo
-                        </a>
-                        <a href="https://www.npmjs.com/packages/git-snark" target="_blank">
-                            <i class="fab fa-npm"></i>package
-                        </a>
-                    </div>
-                </article>
-            </div>
+            <article class="project">
+                <h2>git-snark</h2>
+                <p>Generate witty and snarky commit messages using AI. Add personality to your git workflow.</p>
+                <div class="project-links">
+                    <a href="https://github.com/zanderiscoding/git-snark" target="_blank">
+                        <i class="fab fa-github"></i>repo
+                    </a>
+                    <a href="https://www.npmjs.com/packages/git-snark" target="_blank">
+                        <i class="fab fa-npm"></i>package
+                    </a>
+                </div>
+            </article>
         </main>
     </div>
 
@@ -456,10 +478,8 @@
                     return;
                 }
 
-                const projectRow = project.closest('.project-row');
-                
                 // Check if this project's README is already open
-                const existingReadme = projectRow.nextElementSibling;
+                const existingReadme = project.nextElementSibling;
                 if (existingReadme && existingReadme.classList.contains('readme-container')) {
                     existingReadme.classList.remove('active');
                     setTimeout(() => {
@@ -476,8 +496,8 @@
                     }, 300);
                 });
 
-                // Insert new readme container after the project row
-                projectRow.insertAdjacentElement('afterend', readmeContainer);
+                // Insert new readme container after the clicked project
+                project.insertAdjacentElement('afterend', readmeContainer);
                 readmeContainer.offsetHeight;
                 readmeContainer.classList.add('active');
 
